@@ -15,7 +15,7 @@ const currentLevel = () => CONFIG.levels[state.levelIndex];
 
 function spawnEnemy() {
   const level = currentLevel();
-  state.enemyMaxHp = state.bossActive ? bossHp(level, state.enemyIndex) : enemyHp(level, state.enemyIndex);
+  state.enemyMaxHp = state.bossActive ? bossHp(level, state.killsInLevel) : enemyHp(level, state.killsInLevel);
   state.enemyHp = state.enemyMaxHp;
 }
 
@@ -26,22 +26,21 @@ function startBoss() {
   spawnEnemy();
 }
 
+
 function onEnemyKilled() {
   const level = currentLevel();
   if (state.bossActive) {
-    state.gold += bossGold(level, state.enemyIndex);
+    state.gold += bossGold(level, state.killsInLevel);
     const before = state.unlockedLevels;
     state.unlockedLevels = unlockedAfterBoss(state.unlockedLevels, state.levelIndex, CONFIG.levels.length);
     message = state.unlockedLevels > before ? 'Boss defeated! Next level unlocked.' : 'Boss defeated!';
     state.bossActive = false;
     state.killsInLevel = 0;
-    state.enemyIndex += 1;
     spawnEnemy();
   } else {
-    state.gold += goldReward(level, state.enemyIndex);
+    state.gold += goldReward(level, state.killsInLevel);
     state.kills += 1;
     state.killsInLevel += 1;
-    state.enemyIndex += 1;
     if (shouldSpawnBoss(state.killsInLevel, level)) startBoss();
     else spawnEnemy();
   }
