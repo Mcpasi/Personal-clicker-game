@@ -24,6 +24,9 @@ Testing shows that scaling continues after beating/failing the boss and replayin
 ### 24/10/2026 19:52
 Fixed. lvl 1 initial HP 10, lvl 2 initial HP 80.
 
+### 24/10/2026 20:05
+Importing update for hold mechanic (lvl 2).
+
 ## How I used AI
 See docs/AI_LOG.md
 

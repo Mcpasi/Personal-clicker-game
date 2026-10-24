@@ -44,6 +44,9 @@ test('beating boss on level 1 unlocks level 2', L.unlockedAfterBoss(1, 0, 3) ===
 test('unlock count never decreases', L.unlockedAfterBoss(3, 0, 3) === 3);
 test('unlock count capped at total levels', L.unlockedAfterBoss(3, 2, 3) === 3);
 
+test('mechanic damage multiplies base damage', L.mechanicDamage(3, 8) === 24);
+test('multiplier of 1 leaves damage unchanged', L.mechanicDamage(5, 1) === 5);
+
 const s = document.createElement('h2');
 s.textContent = failed === 0 ? 'All tests passed' : failed + ' test(s) failed';
 document.body.appendChild(s);

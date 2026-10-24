@@ -1,18 +1,27 @@
 import { CONFIG } from './config.js';
 import {
   enemyHp, goldReward, clickDamage, idleDps, applyDamage, isDead,
-  bossHp, bossGold, shouldSpawnBoss, tickTimer, isTimeUp, unlockedAfterBoss,
+  bossHp, bossGold, shouldSpawnBoss, tickTimer, isTimeUp, unlockedAfterBoss, mechanicDamage,
 } from './logic.js';
 import { createState, loadState, saveState, clearSave } from './state.js';
 import { buyUpgrade } from './shop.js';
-import { initClick } from './mechanics/click.js';
+import { activateClick } from './mechanics/click.js';
+import { activateHold } from './mechanics/hold.js';
 import { buildShop, buildLevels, render } from './ui.js';
 
 let state = loadState();
 let message = '';
 
-const currentLevel = () => CONFIG.levels[state.levelIndex];
+const enemyEl = document.getElementById('enemy');
+const arenaEl = document.getElementById('arena');
+const MECHANICS = { click: activateClick, hold: activateHold }; // drag will be added on Day 3
+let deactivateMechanic = null;
 
+const currentLevel = () => CONFIG.levels[state.levelIndex];
+const baseClickDamage = () =>
+  clickDamage(CONFIG.clickBaseDamage, CONFIG.upgrades.clickPower, state.upgrades.clickPower);
+
+// Scaling uses killsInLevel, which resets after every boss cycle and level switch.
 function spawnEnemy() {
   const level = currentLevel();
   state.enemyMaxHp = state.bossActive ? bossHp(level, state.killsInLevel) : enemyHp(level, state.killsInLevel);
@@ -25,7 +34,6 @@ function startBoss() {
   message = 'A boss appears!';
   spawnEnemy();
 }
-
 
 function onEnemyKilled() {
   const level = currentLevel();
@@ -53,6 +61,16 @@ function dealDamage(amount) {
   render(state, message);
 }
 
+// Activate the input mechanic that the current level uses
+function setMechanic() {
+  if (deactivateMechanic) deactivateMechanic();
+  const level = currentLevel();
+  const activate = MECHANICS[level.mechanic] || activateClick;
+  deactivateMechanic = activate(enemyEl, arenaEl, (multiplier = 1) => {
+    dealDamage(mechanicDamage(baseClickDamage(), multiplier));
+  }, level);
+}
+
 function onBuy(key) {
   if (buyUpgrade(state, key)) {
     saveState(state);
@@ -63,19 +81,14 @@ function onBuy(key) {
 function switchLevel(i) {
   if (i >= state.unlockedLevels || i === state.levelIndex) return;
   state.levelIndex = i;
-  state.enemyIndex = 0;
   state.killsInLevel = 0;
   state.bossActive = false;
   message = '';
   spawnEnemy();
+  setMechanic();
   saveState(state);
   render(state, message);
 }
-
-// Level 1 input (other mechanics will be wired here per level)
-initClick(document.getElementById('enemy'), () => {
-  dealDamage(clickDamage(CONFIG.clickBaseDamage, CONFIG.upgrades.clickPower, state.upgrades.clickPower));
-});
 
 // Game tick: idle damage and boss timer, using real elapsed time (background tabs are throttled)
 let lastTick = performance.now();
@@ -106,10 +119,12 @@ document.getElementById('reset').addEventListener('click', () => {
     clearSave();
     state = createState();
     message = '';
+    setMechanic();
     render(state, message);
   }
 });
 
 buildShop(onBuy);
 buildLevels(switchLevel);
+setMechanic();
 render(state, message);

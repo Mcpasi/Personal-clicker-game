@@ -44,3 +44,8 @@ export function isTimeUp(timeLeft) {
 export function unlockedAfterBoss(unlocked, levelIndex, totalLevels) {
   return Math.min(totalLevels, Math.max(unlocked, levelIndex + 2));
 }
+
+// Damage of one valid action: base click damage times the mechanic's multiplier.
+export function mechanicDamage(baseDamage, multiplier) {
+  return baseDamage * multiplier;
+}
