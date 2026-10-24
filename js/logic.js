@@ -23,3 +23,24 @@ export function isDead(hp) {
 export function canAfford(gold, cost) {
   return gold >= cost;
 }
+
+// --- Boss and level progression ---
+export function bossHp(level, index) {
+  return Math.round(enemyHp(level, index) * level.bossHpMultiplier);
+}
+export function bossGold(level, index) {
+  return goldReward(level, index) * level.bossGoldMultiplier;
+}
+export function shouldSpawnBoss(killsInLevel, level) {
+  return killsInLevel >= level.killsBeforeBoss;
+}
+export function tickTimer(timeLeft, seconds) {
+  return Math.max(0, timeLeft - seconds);
+}
+export function isTimeUp(timeLeft) {
+  return timeLeft <= 0;
+}
+// How many levels are unlocked after beating the boss of levelIndex.
+export function unlockedAfterBoss(unlocked, levelIndex, totalLevels) {
+  return Math.min(totalLevels, Math.max(unlocked, levelIndex + 2));
+}

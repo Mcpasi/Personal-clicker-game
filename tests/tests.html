@@ -14,7 +14,7 @@ function test(name, cond) {
   if (!cond) failed++;
   out.appendChild(li);
 }
-const lvl = { enemyBaseHp: 10, hpGrowth: 2, goldBase: 3, goldGrowth: 2 };
+const lvl = { enemyBaseHp: 10, hpGrowth: 2, goldBase: 3, goldGrowth: 2, killsBeforeBoss: 10, bossHpMultiplier: 8, bossGoldMultiplier: 10 };
 const up = { baseCost: 10, costGrowth: 2, perLevel: 1 };
 
 test('first enemy has base HP', L.enemyHp(lvl, 0) === 10);
@@ -30,6 +30,19 @@ test('0 HP is dead', L.isDead(0) === true);
 test('positive HP is alive', L.isDead(0.1) === false);
 test('can afford exact cost', L.canAfford(10, 10) === true);
 test('cannot afford if short', L.canAfford(9, 10) === false);
+
+// Boss and progression
+test('boss HP = enemy HP x multiplier', L.bossHp(lvl, 0) === 80);
+test('boss gold = reward x multiplier', L.bossGold(lvl, 0) === 30);
+test('boss not spawned before kill target', L.shouldSpawnBoss(9, lvl) === false);
+test('boss spawns at kill target', L.shouldSpawnBoss(10, lvl) === true);
+test('timer counts down', L.tickTimer(10, 2.5) === 7.5);
+test('timer never negative', L.tickTimer(1, 5) === 0);
+test('time is up at 0', L.isTimeUp(0) === true);
+test('time not up above 0', L.isTimeUp(0.1) === false);
+test('beating boss on level 1 unlocks level 2', L.unlockedAfterBoss(1, 0, 3) === 2);
+test('unlock count never decreases', L.unlockedAfterBoss(3, 0, 3) === 3);
+test('unlock count capped at total levels', L.unlockedAfterBoss(3, 2, 3) === 3);
 
 const s = document.createElement('h2');
 s.textContent = failed === 0 ? 'All tests passed' : failed + ' test(s) failed';

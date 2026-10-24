@@ -2,9 +2,15 @@ import { CONFIG } from './config.js';
 import { enemyHp } from './logic.js';
 
 export function createState() {
-  const level = CONFIG.levels[0];
-  const hp = enemyHp(level, 0);
-  return { levelIndex: 0, enemyIndex: 0, enemyHp: hp, enemyMaxHp: hp, gold: 0, kills: 0, upgrades: { clickPower: 0, idle: 0 } };
+  const hp = enemyHp(CONFIG.levels[0], 0);
+  return {
+    levelIndex: 0, unlockedLevels: 1,
+    enemyIndex: 0, killsInLevel: 0,
+    enemyHp: hp, enemyMaxHp: hp,
+    bossActive: false, bossTimeLeft: 0,
+    gold: 0, kills: 0,
+    upgrades: { clickPower: 0, idle: 0 },
+  };
 }
 
 export function saveState(state) {

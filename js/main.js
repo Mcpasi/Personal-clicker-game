@@ -1,60 +1,116 @@
 import { CONFIG } from './config.js';
-import { enemyHp, goldReward, clickDamage, idleDps, applyDamage, isDead } from './logic.js';
+import {
+  enemyHp, goldReward, clickDamage, idleDps, applyDamage, isDead,
+  bossHp, bossGold, shouldSpawnBoss, tickTimer, isTimeUp, unlockedAfterBoss,
+} from './logic.js';
 import { createState, loadState, saveState, clearSave } from './state.js';
 import { buyUpgrade } from './shop.js';
 import { initClick } from './mechanics/click.js';
-import { buildShop, render } from './ui.js';
+import { buildShop, buildLevels, render } from './ui.js';
 
 let state = loadState();
+let message = '';
+
+const currentLevel = () => CONFIG.levels[state.levelIndex];
 
 function spawnEnemy() {
-  const level = CONFIG.levels[state.levelIndex];
-  state.enemyMaxHp = enemyHp(level, state.enemyIndex);
+  const level = currentLevel();
+  state.enemyMaxHp = state.bossActive ? bossHp(level, state.enemyIndex) : enemyHp(level, state.enemyIndex);
   state.enemyHp = state.enemyMaxHp;
+}
+
+function startBoss() {
+  state.bossActive = true;
+  state.bossTimeLeft = currentLevel().bossTimeSec;
+  message = 'A boss appears!';
+  spawnEnemy();
+}
+
+function onEnemyKilled() {
+  const level = currentLevel();
+  if (state.bossActive) {
+    state.gold += bossGold(level, state.enemyIndex);
+    const before = state.unlockedLevels;
+    state.unlockedLevels = unlockedAfterBoss(state.unlockedLevels, state.levelIndex, CONFIG.levels.length);
+    message = state.unlockedLevels > before ? 'Boss defeated! Next level unlocked.' : 'Boss defeated!';
+    state.bossActive = false;
+    state.killsInLevel = 0;
+    state.enemyIndex += 1;
+    spawnEnemy();
+  } else {
+    state.gold += goldReward(level, state.enemyIndex);
+    state.kills += 1;
+    state.killsInLevel += 1;
+    state.enemyIndex += 1;
+    if (shouldSpawnBoss(state.killsInLevel, level)) startBoss();
+    else spawnEnemy();
+  }
+  saveState(state);
 }
 
 function dealDamage(amount) {
   state.enemyHp = applyDamage(state.enemyHp, amount);
-  if (isDead(state.enemyHp)) {
-    const level = CONFIG.levels[state.levelIndex];
-    state.gold += goldReward(level, state.enemyIndex);
-    state.kills += 1;
-    state.enemyIndex += 1;
-    spawnEnemy();
-    saveState(state);
-  }
-  render(state);
+  if (isDead(state.enemyHp)) onEnemyKilled();
+  render(state, message);
 }
 
 function onBuy(key) {
   if (buyUpgrade(state, key)) {
     saveState(state);
-    render(state);
+    render(state, message);
   }
 }
 
-// Level 1 input
+function switchLevel(i) {
+  if (i >= state.unlockedLevels || i === state.levelIndex) return;
+  state.levelIndex = i;
+  state.enemyIndex = 0;
+  state.killsInLevel = 0;
+  state.bossActive = false;
+  message = '';
+  spawnEnemy();
+  saveState(state);
+  render(state, message);
+}
+
+// Level 1 input (other mechanics will be wired here per level)
 initClick(document.getElementById('enemy'), () => {
   dealDamage(clickDamage(CONFIG.clickBaseDamage, CONFIG.upgrades.clickPower, state.upgrades.clickPower));
 });
 
-// Idle damage tick (uses real elapsed time, so background tabs still count)
+// Game tick: idle damage and boss timer, using real elapsed time (background tabs are throttled)
 let lastTick = performance.now();
 setInterval(() => {
   const now = performance.now();
-  const seconds = Math.min(now - lastTick, 60000) / 1000; // cap at 60s for now
+  const seconds = Math.min(now - lastTick, 60000) / 1000;
   lastTick = now;
+
   const dps = idleDps(CONFIG.upgrades.idle, state.upgrades.idle);
   if (dps > 0) dealDamage(dps * seconds);
+
+  if (state.bossActive) {
+    state.bossTimeLeft = tickTimer(state.bossTimeLeft, seconds);
+    if (isTimeUp(state.bossTimeLeft)) {
+      // Gentle failure: no punishment, back to normal enemies until the boss returns
+      state.bossActive = false;
+      state.killsInLevel = 0;
+      message = 'The boss got away. Keep farming and try again.';
+      spawnEnemy();
+      saveState(state);
+    }
+  }
+  render(state, message);
 }, CONFIG.tickMs);
 
 document.getElementById('reset').addEventListener('click', () => {
   if (confirm('Reset all progress?')) {
     clearSave();
     state = createState();
-    render(state);
+    message = '';
+    render(state, message);
   }
 });
 
 buildShop(onBuy);
-render(state);
+buildLevels(switchLevel);
+render(state, message);

@@ -9,13 +9,16 @@
 <body>
   <main>
     <h1 id="level-name">Level 1</h1>
+    <div id="levels"></div>
     <p>Gold: <span id="gold">0</span> | Kills: <span id="kills">0</span></p>
     <p>Per click: <span id="click-dmg">1</span> | Idle: <span id="idle-dps">0</span>/s</p>
 
+    <p id="boss-info"></p>
     <div id="hp-bar"><div id="hp-fill"></div></div>
     <p><span id="hp-text"></span></p>
 
     <button id="enemy" type="button" aria-label="Enemy, click to attack">👾</button>
+    <p id="message" aria-live="polite"></p>
 
     <h2>Shop</h2>
     <div id="shop"></div>

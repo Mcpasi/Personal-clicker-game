@@ -12,6 +12,12 @@ The brainstorming process took around 3 days. Will add more details in due time.
 ### 23/10/2026 22:10
 After brainstorming with the AI, We've selected a concept with various ideas to prove its "uniqueness". Due to the vagueness of the task, the AI has suggested a specific structure with various files, as well as 2 additional .md files. imports the .zip file Sonnet created. Will look through the unedited files before testing.
 
+### 24/10/2026 17:00
+After looking through some of the files, I started testing alongside the tests Sonnet had prepared at tests/tests.html. I found an inconsistency and got a fix from Claude. Noticed none of the pushes had reached github, it should be fixed now. Claude gave instructions on how to set up the Github Pages site, it is operational now.
+
+### 24/10/2026 17:20
+AI gave another zipped file containing the updates. Importing these.
+
 ## How I used AI
 See docs/AI_LOG.md
 
