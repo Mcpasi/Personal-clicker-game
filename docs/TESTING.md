@@ -12,8 +12,21 @@ Open `tests/tests.html` via the local server. Covers `js/logic.js`.
 - [YES] Refreshing the page keeps progress
 - [YES] Reset progress works
 - [YES] Idle works when tabbed out
+- [YES] Boss appears after 10 kills, and the info line switches to a countdown
+- [YES] Killing the boss gives a lot of gold and unlocks Level 2
+- [YES] Letting the timer run out removes the boss and starts a new 10-kill count
+- [YES] Level 2 button is locked at the start and works after the boss
+- [PARTIAL] Refreshing mid-boss keeps the boss and its timer
+-> It refreshes boss HP and timer, currently accepted behavior
 
 ## Bug log
 | Date | What happened | Cause | Fix | AI used |
+
 |24/10/2026 16:25|idle damage stopped in background tab|browser throttles timers and the tick assumed a fixed 0.1 s|switched to elapsed-time measurement|Claude|
+
+|24/10/2026 18:50|Refreshing during a boss fight resets the boss’s HP and timer|Progress is only saved on a kill or purchase|Not fixed. Accepted for the prototype|None|
+
+|24/10/2026 19:20|Replaying a level after a boss win or boss escape made enemies and gold rewards keep growing, so the same level got harder and harder|Enemy HP and gold scaled with enemyIndex, a counter that only went up and never reset|Scale by killsInLevel instead, which resets after every boss cycle and level switch|Claude|
+
+
 

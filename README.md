@@ -18,6 +18,9 @@ After looking through some of the files, I started testing alongside the tests S
 ### 24/10/2026 17:20
 AI gave another zipped file containing the updates. Importing these.
 
+### 24/10/2026 19:20
+Testing shows that scaling continues after beating/failing the boss and replaying the level.
+
 ## How I used AI
 See docs/AI_LOG.md
 
