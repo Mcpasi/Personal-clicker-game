@@ -1,5 +1,7 @@
 # AI log
 
+NOTE:Claude has timestamps for each prompt, indicating that it is possible to get the time of previous prompts.
+
 | Date | Tool | What I asked | What it got right / wrong |
 
 |24/10/2026 16:25|Claude|scaffold level 1|got right: structure and logic; needed a fix: idle timing|
