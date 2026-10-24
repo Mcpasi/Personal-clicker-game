@@ -14,4 +14,5 @@ Open `tests/tests.html` via the local server. Covers `js/logic.js`.
 
 ## Bug log
 | Date | What happened | Cause | Fix | AI used |
-|24/10/2026|Idle doesn't work if tabbed out|---|---|---|
+|24/10/2026 16:25|idle damage stopped in background tab|browser throttles timers and the tick assumed a fixed 0.1 s|switched to elapsed-time measurement|Claude|
+
