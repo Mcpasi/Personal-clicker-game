@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Idle Clicker</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main>
+    <h1 id="level-name">Level 1</h1>
+    <p>Gold: <span id="gold">0</span> | Kills: <span id="kills">0</span></p>
+    <p>Per click: <span id="click-dmg">1</span> | Idle: <span id="idle-dps">0</span>/s</p>
+
+    <div id="hp-bar"><div id="hp-fill"></div></div>
+    <p><span id="hp-text"></span></p>
+
+    <button id="enemy" type="button" aria-label="Enemy, click to attack">👾</button>
+
+    <h2>Shop</h2>
+    <div id="shop"></div>
+
+    <button id="reset" type="button">Reset progress</button>
+  </main>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

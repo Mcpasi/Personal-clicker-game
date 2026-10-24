@@ -1,0 +1,10 @@
+/* Functional layout only. Real design comes later. */
+body { font-family: system-ui, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
+main { max-width: 480px; margin: 0 auto; padding: 1rem; text-align: center; }
+#enemy { font-size: 6rem; padding: 1rem 2rem; cursor: pointer; user-select: none; touch-action: manipulation; }
+#enemy:active { transform: scale(0.93); }
+#hp-bar { height: 20px; background: #ccc; border-radius: 4px; overflow: hidden; }
+#hp-fill { height: 100%; width: 100%; background: #c0392b; }
+#shop button { display: block; width: 100%; margin: 0.4rem 0; padding: 0.6rem; font-size: 1rem; cursor: pointer; }
+#shop button:disabled { opacity: 0.5; cursor: not-allowed; }
+#reset { margin-top: 2rem; }

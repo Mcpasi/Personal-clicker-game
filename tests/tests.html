@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Logic tests</title></head>
+<body>
+<h1>Logic tests</h1>
+<ul id="out"></ul>
+<script type="module">
+import * as L from '../js/logic.js';
+const out = document.getElementById('out');
+let failed = 0;
+function test(name, cond) {
+  const li = document.createElement('li');
+  li.textContent = (cond ? 'PASS: ' : 'FAIL: ') + name;
+  li.style.color = cond ? 'green' : 'red';
+  if (!cond) failed++;
+  out.appendChild(li);
+}
+const lvl = { enemyBaseHp: 10, hpGrowth: 2, goldBase: 3, goldGrowth: 2 };
+const up = { baseCost: 10, costGrowth: 2, perLevel: 1 };
+
+test('first enemy has base HP', L.enemyHp(lvl, 0) === 10);
+test('enemy HP grows with index', L.enemyHp(lvl, 2) === 40);
+test('gold reward grows with index', L.goldReward(lvl, 1) === 6);
+test('upgrade cost at 0 owned = base cost', L.upgradeCost(up, 0) === 10);
+test('upgrade cost scales', L.upgradeCost(up, 3) === 80);
+test('click damage adds upgrade bonus', L.clickDamage(1, up, 4) === 5);
+test('idle dps is 0 with no upgrades', L.idleDps(up, 0) === 0);
+test('damage reduces HP', L.applyDamage(10, 3) === 7);
+test('HP never goes below 0', L.applyDamage(5, 100) === 0);
+test('0 HP is dead', L.isDead(0) === true);
+test('positive HP is alive', L.isDead(0.1) === false);
+test('can afford exact cost', L.canAfford(10, 10) === true);
+test('cannot afford if short', L.canAfford(9, 10) === false);
+
+const s = document.createElement('h2');
+s.textContent = failed === 0 ? 'All tests passed' : failed + ' test(s) failed';
+document.body.appendChild(s);
+</script>
+</body></html>
