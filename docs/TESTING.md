@@ -11,6 +11,7 @@ Open `tests/tests.html` via the local server. Covers `js/logic.js`.
 - [YES] Buying "Idle helper" damages the enemy without clicking
 - [YES] Refreshing the page keeps progress
 - [YES] Reset progress works
+- [YES] Idle works when tabbed out
 
 ## Bug log
 | Date | What happened | Cause | Fix | AI used |
