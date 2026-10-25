@@ -44,6 +44,20 @@ starting the entire test suite
 
 Alternatively, you can also run the entire test suite via GitHub Actions.
 
+**Suspicion:** A boss that appears as a result of idle damage inherits the remaining time from the previous tick, which can cause it to vanish immediately.
+
+The test, however, expects an active boss with a full 30 seconds, and should therefore currently fail.
+
+As expected, the reproduction test failed on the unmodified code; the bug was specifically fixed in `js/main.js.`
+
+Contributor:
+
+Mcpasi
+
+https://github.com/Mcpasi
+
+
+
 ## How I used AI
 See docs/AI_LOG.md
 
