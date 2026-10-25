@@ -36,9 +36,11 @@ Testing shows hold mechanic is operational. Currently only balance issues. user-
 Adding comprehensive unit and smoke tests
 Node.js and npm are required to run the tests locally.
 
+In addition, Playwright is required for smoke tests in order to test behavior within the browser.
+
 starting the entire test suite
 
-`npm run test:all'
+`npm run test:all`
 
 Alternatively, you can also run the entire test suite via GitHub Actions.
 
