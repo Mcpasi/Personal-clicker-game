@@ -139,6 +139,25 @@ describe('boss lifecycle', () => {
     expect(saved()).toMatchObject({ bossActive: true, bossTimeLeft: 30, killsInLevel: 10 });
   });
 
+  it('does not expire a newly spawned boss using time elapsed before its spawn', async () => {
+    await boot({
+      kills: 9, killsInLevel: 9, enemyHp: 30, enemyMaxHp: 35,
+      upgrades: { clickPower: 0, idle: 1 },
+    });
+
+    // At 0.5 DPS, all sixty elapsed seconds are needed to kill the normal enemy.
+    // The boss only spawns at the end of that interval and still has its full timer.
+    const now = performance.now();
+    vi.spyOn(performance, 'now').mockReturnValue(now + 60_000);
+    vi.advanceTimersByTime(CONFIG.tickMs);
+
+    expect(element('kills').textContent).toBe('10');
+    expect(saved()).toMatchObject({ bossActive: true, bossTimeLeft: 30, killsInLevel: 10 });
+    expect(element('boss-info').textContent).toBe('BOSS: 30.0s left');
+    expect(element('hp-text').textContent).toBe('320 / 320 HP');
+    expect(element('message').textContent).toBe('A boss appears!');
+  });
+
   it('rewards a boss victory, unlocks the next level and starts a fresh cycle', async () => {
     await boot({ kills: 10, killsInLevel: 10, bossActive: true, bossTimeLeft: 20, enemyHp: 1, enemyMaxHp: 320 });
     attack();

@@ -32,6 +32,16 @@ Importing update for hold mechanic (lvl 2).
 ### 24/10/2026 20:56
 Testing shows hold mechanic is operational. Currently only balance issues. user-testing shows the hold mechanic is "too long", will adjust eventually.
 
+## 25/10/2026
+Adding comprehensive unit and smoke tests
+Node.js and npm are required to run the tests locally.
+
+starting the entire test suite
+
+`npm run test:all'
+
+Alternatively, you can also run the entire test suite via GitHub Actions.
+
 ## How I used AI
 See docs/AI_LOG.md
 
